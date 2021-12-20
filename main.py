@@ -3,15 +3,12 @@ import numpy as np
 from geneticalgorithm import geneticalgorithm as ga
 from pyswarm import pso
 
-# MLP has been modified for this task. Implementation as a class was a little over-complicated for use with the
-# chosen GA and PSO libraries.
-
 # Create training dataset
 dataset_size = 100
-dataset = np.array([[random() / 2 for _ in range(2)] for _ in range(dataset_size)])
-labels = np.array([[i[0] + i[1]] for i in dataset])
+dataset = np.array([[random() / 2 for _ in range(2)] for _ in range(dataset_size)])     # List of pairs of numbers in the range [0, 1]
+labels = np.array([[i[0] + i[1]] for i in dataset])                                     # Sum each pair of numbers to obtain labels
 
-# Define network structure
+# Define MLP structure
 n_inputs = 2
 n_hidden_layer_neurons = [2]
 n_outputs = 1
@@ -25,6 +22,7 @@ for i in range(len(layers)):
     activations.append(nodes)
 
 
+# Define an activation function - in this case, ReLU
 def ReLU(net_inputs):
     """"
     Applies Rectified Linear Unit activation function to input array.
@@ -39,9 +37,9 @@ def ReLU(net_inputs):
     return net_inputs * (net_inputs > 0)
 
 
-# Create objective function
-# Takes weights as a 1D list (amenable to GA / PSO algorithm) - these will be the parameters
-# optimized by the GA / PSO
+# Create objective function - i.e. function which evaluates performance of the function (our network) with current parameters
+# GA / PSO algorithm takes weights as parameters to be optimized
+# Best to take parameters as 1D list as this is most amenable to GA/ PSO algorithms
 
 def evaluate_network(weights):
     """
@@ -60,7 +58,7 @@ def evaluate_network(weights):
         layer_weights = weights_as_array[0:(layers[i] * layers[i + 1])].reshape((layers[i], layers[i + 1]))
         weights_reshape.append(layer_weights)
 
-    # Track total error over all items in dataset
+    # Initialise var to track total error over all items in dataset
     total_error = 0
 
     # Forward pass all items in dataset, add error for each item
